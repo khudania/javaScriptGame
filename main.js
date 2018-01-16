@@ -1,9 +1,10 @@
 var ctx, balls =[], moves = [];
 var mouseDownX = null, mouseDownY = null;
 var timer;
+var moveCount = 0;
 var imageList = [orange, red, blue, green, grey, purple, yellow];
 
-
+var startBtn = document.getElementById('start');
 
 
 function getRandomNum(n){
@@ -47,6 +48,11 @@ function Ball(x, y){
 
 
 function initialize() {
+
+    startBtn.style.display = 'none';
+
+    moveCount = 3;
+
     //create Ball Objects
     for (var x = 0; x  < 10; x++){
         balls[x] = [];
@@ -107,6 +113,18 @@ function checkBallStatus(){
         }
     }
     paint();
+
+    //Game Over
+    if(moves.length == 0 && moveCount == 0){
+        clearInterval(timer);
+        timer = null;
+        setTimeout('gameOver()', 600);
+    }
+}
+
+function gameOver() {
+    ctx.clearRect(0, 0, 600, 580);
+    startBtn.style.display = 'inline';
 }
 
 function setRemoveFlag() {
@@ -219,7 +237,7 @@ function paint(){
     //text
     ctx.font = 'bold 20px Open Sans';
     ctx.text = 'center';
-    ctx.fillText('Moves Left : 10', 50, 50);
+    ctx.fillText('Moves Left : ' + moveCount, 50, 50);
     ctx.fillText('Score : 33333', 450, 50);
 }
 
@@ -261,6 +279,9 @@ function myMouseUp(e) {
     var ballColor = balls[ballX1][ballY1].color;
     balls[ballX1][ballY1].moveBall(ballX2, ballY2, balls[ballX2][ballY2].color);
     balls[ballX2][ballY2].moveBall(ballX1, ballY1, ballColor);
+
+    //Decrease MoveCount
+    moveCount--;
 
     paint();
 }
